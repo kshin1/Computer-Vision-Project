@@ -22,43 +22,11 @@ EXPRESSION_DICT = {"h": happy, "sa": sad, "a": angry,\
 EXPRESSION = {"h":"happy", "sa": "sad", "a": "angry",\
 		"n": "neutral", "su": "surprised", "c": "confused", "o": "other"}
 
-if False:
-	for key, d in EXPRESSION_DICT.items():
-		if os.path.isfile(EXPRESSION[key] + ".pickle"):
-			f = open(EXPRESSION[key] + ".pickle", "rb")
-			d = pickle.load(f)
-			f.close()
-
-if os.path.isfile("happy.pickle"):
-	f = open("happy.pickle", "rb")
-	happy = pickle.load(f)
-	f.close()
-if os.path.isfile("sad.pickle"):
-	f = open("sad.pickle", "rb")
-	sad = pickle.load(f)
-	f.close()
-if os.path.isfile("angry.pickle"):
-	f = open("angry.pickle", "rb")
-	angry = pickle.load(f)
-	f.close()
-if os.path.isfile("neutral.pickle"):
-	f = open("neutral.pickle", "rb")
-	neutral = pickle.load(f)
-	f.close()
-if os.path.isfile("surprised.pickle"):
-	f = open("surprised.pickle", "rb")
-	surprised = pickle.load(f)
-	f.close()
-if os.path.isfile("confused.pickle"):
-	f = open("confused.pickle", "rb")
-	confused = pickle.load(f)
-	f.close()
-if os.path.isfile("other.pickle"):
-	f = open("other.pickle", "rb")
-	f.close()
-
-for d in EXPRESSION_DICT.values():
-	print(d)
+for key, d in EXPRESSION_DICT.items():
+	if os.path.isfile(EXPRESSION[key] + ".pickle"):
+		f = open(EXPRESSION[key] + ".pickle", "rb")
+		EXPRESSION_DICT[key] = pickle.load(f)
+		f.close()
 
 # initialize dlib's face detector (HOG-based) and then create
 # the facial landmark predictor
@@ -66,8 +34,9 @@ detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 # load the input image, resize it, and convert it to grayscale
 #for img in glob.glob("../projectData/*.bmp"): #THIS IS FOR ALL IMAEGS
-#for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DATA
-for img in glob.glob("projectImages/A[0-9]*.bmp"): # Try on test subject 1
+print("Enter 'quit' to stop tagging images")
+for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DATA
+#for img in glob.glob("projectImages/A[0-9]*.bmp"): # Try on test subject 1
 	img_id = img.split("/")[1]
 	# Check if img has already been tagged
 	tagged = False
@@ -120,9 +89,13 @@ for img in glob.glob("projectImages/A[0-9]*.bmp"): # Try on test subject 1
 	
 	# User tagging facial expression
 	expression = raw_input("{}: ".format(img_id))
-	while expression not in EXPRESSION_DICT.keys():
+	while expression not in EXPRESSION_DICT.keys() and expression != "quit":
 		expression = raw_input("{}: ".format(list(EXPRESSION_DICT.keys())))
 	
+	# Stop tagging images
+	if expression == "quit":
+		break
+
 	EXPRESSION_DICT[expression][img_id] = facial_features
 	
 	if False:
