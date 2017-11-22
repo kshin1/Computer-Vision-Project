@@ -44,7 +44,6 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 		# Already tagged the image
 		if img_id in d.keys():
 			tagged = True
-			#:print EXPRESSION_DICT[key].keys()
 			print key
 			break
 	# Go to the next image
@@ -100,21 +99,6 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 
 	EXPRESSION_DICT[expression][img_id] = facial_features
 	
-	if False:
-		if expression == "h": 
-			happy[img_id] = facial_features
-		elif expression == "sa":
-			sad[img_id] = facial_features
-		elif expression == "a":
-			angry[img_id] = facial_features
-		elif expression == "n":
-			neutral[img_id] = facial_features
-		elif expression == "c":
-			confused[img_id] = facial_features
-		elif expression == "o":
-			other[img_id] = facial_features
-
-
 # Save classifications to JSON files
 for e, d in EXPRESSION_DICT.items():
 	f = open(EXPRESSION[e] + ".pickle", "wb")
