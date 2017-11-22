@@ -118,6 +118,8 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 		left_most_y = facial_features["mouth"][0][1]
 		right_most_x = facial_features["mouth"][0][0]
 		right_most_y = facial_features["mouth"][0][1]
+		top_y = facial_features["mouth"][0][1]
+		bottom_y = facial_features["mouth"][0][1]
 		for (x, y) in facial_features["mouth"]:
 			if x < left_most_x: 
 				left_most_x = x
@@ -125,8 +127,45 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 			if x > right_most_x:
 				right_most_x = x
 				right_most_y = y
+			if y < top_y:
+				top_y = y
+			if y > bottom_y:
+				bottom_y = y
 		cv2.circle(image, (right_most_x, right_most_y), 1, (0, 255, 0), -1)
 		cv2.circle(image, (left_most_x, left_most_y), 1, (0,255,0), -1)
+		cv2.circle(image, ((right_most_x + left_most_x) /2, bottom_y), 1, (0,255,0), -1)
+		cv2.circle(image, ((right_most_x + left_most_x)/2, top_y), 1, (0,255,0), -1)
+	
+		# Process the nose
+		# Keep track of the top 4 points (smalled y)
+		nose_y = []
+		nose_x = []
+		for (x,y) in facial_features["nose"]:
+			nose_x.append(x)
+			if len(nose_y) < 4:
+				nose_y.append(y)
+				nose_y.sort()
+			else:
+				if y < nose_y[3]:
+					nose_y[3] = y
+		cv2.circle(image, (sum(nose_x)/len(nose_x), nose_y[3]), 1, (0,255,0), -1)
+
+		# Process the left eyebrow
+		leb_x = []
+		leb_y = []
+		for (x,y) in facial_features["left_eyebrow"]:
+			leb_x.append(x)
+			leb_y.append(y)
+		cv2.circle(image, (sum(leb_x)/len(leb_x), sum(leb_y)/len(leb_y)), 1, (0,255,0), -1)
+
+		# Process the right eyebrow
+		reb_x = []
+		reb_y = []
+		for (x,y) in facial_features["right_eyebrow"]:
+			reb_x.append(x)
+			reb_y.append(y)
+		cv2.circle(image, (sum(reb_x)/len(reb_x), sum(reb_y)/len(reb_y)), 1, (0,255,0), -1)
+
 	
 	# show the output image with the face detections + facial landmarks
 	cv2.imshow("Output", image)
