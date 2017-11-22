@@ -81,7 +81,7 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 		# and draw them on the image
 		for (x, y) in shape:
 			cv2.circle(image, (x, y), 1, (0, 0, 255), -1)
-	        # Process the Left Eye
+	        # Process the right Eye
 		left_most_x = facial_features["left_eye"][0][0]
 		left_most_y = facial_features["left_eye"][0][1]
 		right_most_x = facial_features["left_eye"][0][0]
@@ -97,7 +97,7 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 		cv2.circle(image, (right_most_x, right_most_y), 1, (0, 255, 0), -1)
 		cv2.circle(image, (left_most_x, left_most_y), 1, (0,255,0), -1)
 
-
+		# Process the Left Eye
 		left_most_x = facial_features["right_eye"][0][0]
 		left_most_y = facial_features["right_eye"][0][1]
 		right_most_x = facial_features["right_eye"][0][0]
