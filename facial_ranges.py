@@ -81,7 +81,8 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 		# and draw them on the image
 		for (x, y) in shape:
 			cv2.circle(image, (x, y), 1, (0, 0, 255), -1)
-	        # Process the right Eye
+
+		# Process the person's left eye (our right)
 		left_most_x = facial_features["left_eye"][0][0]
 		left_most_y = facial_features["left_eye"][0][1]
 		top_most_x = facial_features["left_eye"][0][0]
@@ -97,7 +98,7 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 		cv2.circle(image, (top_most_x, top_most_y), 1, (0, 255, 0), -1)
 		cv2.circle(image, (left_most_x, left_most_y), 1, (0,255,0), -1)
 
-		# Process the Left Eye
+		# Process the person's right eye (our left)
 		top_most_x = facial_features["right_eye"][0][0]
 		top_most_y = facial_features["right_eye"][0][1]
 		right_most_x = facial_features["right_eye"][0][0]
@@ -135,6 +136,9 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 		cv2.circle(image, (left_most_x, left_most_y), 1, (0,255,0), -1)
 		cv2.circle(image, ((right_most_x + left_most_x) /2, bottom_y), 1, (0,255,0), -1)
 		cv2.circle(image, ((right_most_x + left_most_x)/2, top_y), 1, (0,255,0), -1)
+		hght_mouth = bottom_y - top_y 
+		wdth_mouth = right_most_x - left_most_x
+		print("Mouth height={}, width={}".format(hght_mouth, wdth_mouth))
 	
 		# Process the nose
 		# Keep track of the top 4 points (smalled y)
@@ -149,6 +153,8 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 				if y < nose_y[3]:
 					nose_y[3] = y
 		cv2.circle(image, (sum(nose_x)/len(nose_x), nose_y[3]), 1, (0,255,0), -1)
+		dist_mouth_nose = top_y - nose_y[3]
+		print("Distance nose to mouth={}".format(dist_mouth_nose))
 
 		# Process the left eyebrow
 		leb_x = []
@@ -166,7 +172,6 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 			reb_y.append(y)
 		cv2.circle(image, (sum(reb_x)/len(reb_x), sum(reb_y)/len(reb_y)), 1, (0,255,0), -1)
 
-	
 	# show the output image with the face detections + facial landmarks
 	cv2.imshow("Output", image)
 
