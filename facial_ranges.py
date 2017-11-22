@@ -8,6 +8,7 @@ import cv2
 import glob
 import pickle
 import os
+import math
 
 happy = {}
 sad = {}
@@ -81,7 +82,9 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 		# and draw them on the image
 		for (x, y) in shape:
 			cv2.circle(image, (x, y), 1, (0, 0, 255), -1)
-	        # Process the right Eye
+	        # Process the Left Eye
+		lEye_x = []
+		lEye_y = []
 		left_most_x = facial_features["left_eye"][0][0]
 		left_most_y = facial_features["left_eye"][0][1]
 		top_most_x = facial_features["left_eye"][0][0]
@@ -93,11 +96,15 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 			if y <= top_most_y:
 				top_most_x = x
 				top_most_y = y
-		
+		lEye_x = [top_most_x, left_most_x]
+		lEye_y = [top_most_y, left_most_y]		
+
 		cv2.circle(image, (top_most_x, top_most_y), 1, (0, 255, 0), -1)
 		cv2.circle(image, (left_most_x, left_most_y), 1, (0,255,0), -1)
 
-		# Process the Left Eye
+		# Process the Right Eye
+		rEye_x = []
+		rEye_y = []
 		top_most_x = facial_features["right_eye"][0][0]
 		top_most_y = facial_features["right_eye"][0][1]
 		right_most_x = facial_features["right_eye"][0][0]
@@ -109,6 +116,9 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 			if x > right_most_x:
 				right_most_x = x
 				right_most_y = y
+		rEye_x = [top_most_x, right_most_x]
+		rEye_y = [top_most_y, right_most_y]
+
 		cv2.circle(image, (right_most_x, right_most_y), 1, (0, 255, 0), -1)
 		cv2.circle(image, (top_most_x, top_most_y), 1, (0,255,0), -1)
 
@@ -156,7 +166,9 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 		for (x,y) in facial_features["left_eyebrow"]:
 			leb_x.append(x)
 			leb_y.append(y)
-		cv2.circle(image, (sum(leb_x)/len(leb_x), sum(leb_y)/len(leb_y)), 1, (0,255,0), -1)
+		lAve_x = sum(leb_x)/len(leb_x)
+		lAve_y = sum(leb_y)/len(leb_y)
+		cv2.circle(image, (lAve_x, lAve_y), 1, (0,255,0), -1)
 
 		# Process the right eyebrow
 		reb_x = []
@@ -164,9 +176,20 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 		for (x,y) in facial_features["right_eyebrow"]:
 			reb_x.append(x)
 			reb_y.append(y)
-		cv2.circle(image, (sum(reb_x)/len(reb_x), sum(reb_y)/len(reb_y)), 1, (0,255,0), -1)
+		rAve_x = sum(reb_x)/len(reb_x)
+		rAve_y = sum(reb_y)/len(reb_y)
+		cv2.circle(image, (rAve_x, rAve_y), 1, (0,255,0), -1)
 
-	
+	# Distance Calculations for between eybrows and eyes
+	# Left Eye and Brow
+	dist = math.sqrt(pow(lEye_x[0]-lAve_x, 2) + pow(lEye_y[0]-lAve_y, 2))
+	print dist
+	# Right Eye and Brow
+	dist = math.sqrt(pow(rEye_x[0]-rAve_x, 2) + pow(rEye_y[0]-rAve_y, 2))
+	print dist
+	# Distance between Eyes
+	dist = math.sqrt(pow(rEye_x[1]-lEye_x[1], 2) + pow(rEye_y[1]-lEye_y[1], 2))
+	print dist
 	# show the output image with the face detections + facial landmarks
 	cv2.imshow("Output", image)
 
