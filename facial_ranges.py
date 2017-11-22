@@ -84,33 +84,33 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 	        # Process the right Eye
 		left_most_x = facial_features["left_eye"][0][0]
 		left_most_y = facial_features["left_eye"][0][1]
-		right_most_x = facial_features["left_eye"][0][0]
-		right_most_y = facial_features["left_eye"][0][1]
+		top_most_x = facial_features["left_eye"][0][0]
+		top_most_y = facial_features["left_eye"][0][1]
                 for (x, y) in facial_features["left_eye"]:
 			if x < left_most_x: 
 				left_most_x = x
-				left_most_y = x
-			if x > right_most_x:
-				right_most_x = x
-				right_most_y = y
+				left_most_y = y
+			if y <= top_most_y:
+				top_most_x = x
+				top_most_y = y
 		
-		cv2.circle(image, (right_most_x, right_most_y), 1, (0, 255, 0), -1)
+		cv2.circle(image, (top_most_x, top_most_y), 1, (0, 255, 0), -1)
 		cv2.circle(image, (left_most_x, left_most_y), 1, (0,255,0), -1)
 
 		# Process the Left Eye
-		left_most_x = facial_features["right_eye"][0][0]
-		left_most_y = facial_features["right_eye"][0][1]
+		top_most_x = facial_features["right_eye"][0][0]
+		top_most_y = facial_features["right_eye"][0][1]
 		right_most_x = facial_features["right_eye"][0][0]
 		right_most_y = facial_features["right_eye"][0][1]
                 for (x, y) in facial_features["right_eye"]:
-			if x < left_most_x:
-				left_most_x = x
-				left_most_y = x
+			if y <= top_most_y:
+				top_most_x = x
+				top_most_y = y
 			if x > right_most_x:
 				right_most_x = x
 				right_most_y = y
 		cv2.circle(image, (right_most_x, right_most_y), 1, (0, 255, 0), -1)
-		cv2.circle(image, (left_most_x, left_most_y), 1, (0,255,0), -1)
+		cv2.circle(image, (top_most_x, top_most_y), 1, (0,255,0), -1)
 
 
 		# Process the mouth
