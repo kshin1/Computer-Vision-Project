@@ -21,6 +21,8 @@ EXPRESSION_DICT = {"h": happy, "sa": sad, "a": angry,\
 		"n": neutral, "su": surprised, "c": confused, "o": other}
 EXPRESSION = {"h":"happy", "sa": "sad", "a": "angry",\
 		"n": "neutral", "su": "surprised", "c": "confused", "o": "other"}
+EXPRESSION_TEST_DICT = {"h": happy, "sa": sad, "a": angry,\
+		"n": neutral, "su": surprised, "c": confused, "o": other}
 
 for key, d in EXPRESSION_DICT.items():
 	if os.path.isfile(EXPRESSION[key] + ".pickle"):
@@ -35,7 +37,7 @@ predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 # load the input image, resize it, and convert it to grayscale
 #for img in glob.glob("../projectData/*.bmp"): #THIS IS FOR ALL IMAEGS
 print("Enter 'quit' to stop tagging images")
-for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DATA
+for img in glob.glob("projectImages/*.bmp"): #THIS IS FOR TRAINING DATA
 #for img in glob.glob("projectImages/A[0-9]*.bmp"): # Try on test subject 1
 	img_id = img.split("/")[1]
 	# Check if img has already been tagged
@@ -44,7 +46,90 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 		# Already tagged the image
 		if img_id in d.keys():
 			tagged = True
-			#:print EXPRESSION_DICT[key].keys()
+			break
+	# Go to the next image
+	if tagged:
+		continue
+
+	image = cv2.imread(img)
+	image = imutils.resize(image, width=500)
+	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+	
+	# detect faces in the grayscale image
+	rects = detector(gray, 1)
+	
+	# loop over the face detections
+	for (i, rect) in enumerate(rects):
+		# determine the facial landmarks for the face region, then
+		# convert the facial landmark (x, y)-coordinates to a NumPy
+		# array
+		shape = predictor(gray, rect)
+		shape = face_utils.shape_to_np(shape)
+	
+		# convert dlib's rectangle to a OpenCV-style bounding box
+		# [i.e., (x, y, w, h)], then draw the face bounding box
+		(x, y, w, h) = face_utils.rect_to_bb(rect)
+		cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+	
+		# show the face number
+		cv2.putText(image, "Face #{}".format(i + 1), (x - 10, y - 10),
+			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+	
+		# loop over the (x, y)-coordinates for the facial landmarks
+		# and draw them on the image
+		for (x, y) in shape:
+			cv2.circle(image, (x, y), 1, (0, 0, 255), -1)
+	
+	# show the output image with the face detections + facial landmarks
+	#cv2.imshow("Output", image)
+
+	#cv2.waitKey(0)
+	
+	facial_features = {}
+	for (name, (i, j)) in face_utils.FACIAL_LANDMARKS_IDXS.items():
+		facial_features[name] = shape[i:j]
+	
+	# User tagging facial expression
+	expression = raw_input("{}: ".format(img_id))
+	while expression not in EXPRESSION_DICT.keys() and expression != "quit":
+		expression = raw_input("{}: ".format(list(EXPRESSION_DICT.keys())))
+	
+	# Stop tagging images
+	if expression == "quit":
+		break
+
+	EXPRESSION_DICT[expression][img_id] = facial_features
+	
+	if False:
+		if expression == "h": 
+			happy[img_id] = facial_features
+		elif expression == "sa":
+			sad[img_id] = facial_features
+		elif expression == "a":
+			angry[img_id] = facial_features
+		elif expression == "n":
+			neutral[img_id] = facial_features
+		elif expression == "c":
+			confused[img_id] = facial_features
+		elif expression == "o":
+			other[img_id] = facial_features
+
+
+# Save classifications to JSON files
+for e, d in EXPRESSION_DICT.items():
+	f = open(EXPRESSION[e] + ".pickle", "wb")
+	pickle.dump(d, f)
+	f.close()
+
+
+'''for img in glob.glob("projectImages/[K-M][0-9]*.bmp"): #THIS IS FOR TEST DATA
+	img_id = img.split("/")[1]
+	# Check if img has already been tagged
+	tagged = False
+	for key, d in EXPRESSION_DICT.items():
+		# Already tagged the image
+		if img_id in d.keys():
+			tagged = True
 			print key
 			break
 	# Go to the next image
@@ -98,61 +183,5 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 	if expression == "quit":
 		break
 
-	EXPRESSION_DICT[expression][img_id] = facial_features
-	
-	if False:
-		if expression == "h": 
-			happy[img_id] = facial_features
-		elif expression == "sa":
-			sad[img_id] = facial_features
-		elif expression == "a":
-			angry[img_id] = facial_features
-		elif expression == "n":
-			neutral[img_id] = facial_features
-		elif expression == "c":
-			confused[img_id] = facial_features
-		elif expression == "o":
-			other[img_id] = facial_features
-
-
-# Save classifications to JSON files
-for e, d in EXPRESSION_DICT.items():
-	f = open(EXPRESSION[e] + ".pickle", "wb")
-	pickle.dump(d, f)
-	f.close()
-
-if False:
-	for img in glob.glob("projectImages/[K-M][0-9]*.bmp"): #THIS IS FOR TEST DATA
-		#image = cv2.imread(args["image"])
-		image = cv2.imread(img)
-		image = imutils.resize(image, width=500)
-		gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-		
-		# detect faces in the grayscale image
-		rects = detector(gray, 1)
-		
-		# loop over the face detections
-		for (i, rect) in enumerate(rects):
-			# determine the facial landmarks for the face region, then
-			# convert the facial landmark (x, y)-coordinates to a NumPy
-			# array
-			shape = predictor(gray, rect)
-			shape = face_utils.shape_to_np(shape)
-		
-			# convert dlib's rectangle to a OpenCV-style bounding box
-			# [i.e., (x, y, w, h)], then draw the face bounding box
-			(x, y, w, h) = face_utils.rect_to_bb(rect)
-			cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-		
-			# show the face number
-			cv2.putText(image, "Face #{}".format(i + 1), (x - 10, y - 10),
-				cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-		
-			# loop over the (x, y)-coordinates for the facial landmarks
-			# and draw them on the image
-			for (x, y) in shape:
-				cv2.circle(image, (x, y), 1, (0, 0, 255), -1)
-		
-		# show the output image with the face detections + facial landmarks
-		cv2.imshow("Output", image)
-		cv2.waitKey(1)
+	EXPRESSION_TEST_DICT[expression][img_id] = facial_features
+'''
