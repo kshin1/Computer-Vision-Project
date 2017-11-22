@@ -44,6 +44,8 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 		# Already tagged the image
 		if img_id in d.keys():
 			tagged = True
+			#:print EXPRESSION_DICT[key].keys()
+			print key
 			break
 	# Go to the next image
 	if tagged:
