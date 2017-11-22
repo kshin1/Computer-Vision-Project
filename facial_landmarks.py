@@ -22,11 +22,40 @@ EXPRESSION_DICT = {"h": happy, "sa": sad, "a": angry,\
 EXPRESSION = {"h":"happy", "sa": "sad", "a": "angry",\
 		"n": "neutral", "su": "surprised", "c": "confused", "o": "other"}
 
-for key, d in EXPRESSION_DICT.items():
-	if os.path.isfile(EXPRESSION[key] + ".pickle"):
-		f = open(EXPRESSION[key] + ".pickle", "rb")
-		d = pickle.load(f)
-		f.close()
+if False:
+	for key, d in EXPRESSION_DICT.items():
+		if os.path.isfile(EXPRESSION[key] + ".pickle"):
+			f = open(EXPRESSION[key] + ".pickle", "rb")
+			d = pickle.load(f)
+			f.close()
+
+if os.path.isfile("happy.pickle"):
+	f = open("happy.pickle", "rb")
+	happy = pickle.load(f)
+	f.close()
+if os.path.isfile("sad.pickle"):
+	f = open("sad.pickle", "rb")
+	sad = pickle.load(f)
+	f.close()
+if os.path.isfile("angry.pickle"):
+	f = open("angry.pickle", "rb")
+	angry = pickle.load(f)
+	f.close()
+if os.path.isfile("neutral.pickle"):
+	f = open("neutral.pickle", "rb")
+	neutral = pickle.load(f)
+	f.close()
+if os.path.isfile("surprised.pickle"):
+	f = open("surprised.pickle", "rb")
+	surprised = pickle.load(f)
+	f.close()
+if os.path.isfile("confused.pickle"):
+	f = open("confused.pickle", "rb")
+	confused = pickle.load(f)
+	f.close()
+if os.path.isfile("other.pickle"):
+	f = open("other.pickle", "rb")
+	f.close()
 
 for d in EXPRESSION_DICT.values():
 	print(d)
