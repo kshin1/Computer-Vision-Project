@@ -54,6 +54,7 @@ print("Enter 'quit' to stop tagging images")
 for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DATA
 #for img in glob.glob("projectImages/A[0-9]*.bmp"): # Try on test subject 1
 	img_id = img.split("/")[1]
+	print(img_id)
 	# Check if img has already been tagged
 	tagged = False
 	facial_features = {}
@@ -239,7 +240,7 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"): #THIS IS FOR TRAINING DAT
 				oList = [z + m for z, m in zip(oList, distList)]
 				countO += 1
 	# show the output image with the face detections + facial landmarks
-	cv2.imshow("Output", image)
+	#cv2.imshow("Output", image)
 
 	#cv2.waitKey(0)
 
@@ -270,14 +271,15 @@ cList = [w / countC for w in cList]
 oList = [w / countO for w in oList]
 AVE_EXPRESSION = {"h": hList, "sa": saList, "a": aList,\
 		"n": nList, "su": suList, "c": cList, "o": oList} 
-for key, value in AVE_EXPRESSION:
+for key, value in AVE_EXPRESSION.items():
 	print key, ":" 
 	print "Distance of left eye & brow: ", value[0], "Distance of right eye & brow: ", value[1], \
 		"Distance between eyes: ", value[2], "Distance from mouth to nose: ", value[3], \
 		"Height of Mouth: ", value[4], "Width of Mouth: ", value[5] 
 
-
-
+f = open("average_dict.pickle", "wb")
+pickle.dump(AVE_EXPRESSION, f)
+f.close()
 
 # Save classifications to JSON files
 if False:
