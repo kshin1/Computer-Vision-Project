@@ -306,7 +306,7 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"):
 	actual_count[actual] = actual_count.get(actual, 0) + 1
 
 print("Tested {} images, {} correct".format(total, correct))
-print("Overall percent accuracy: {}%".format(float(correct / total)* 100))
+print("Overall percent accuracy: {}%".format((float(correct) / total)* 100))
 for key, value in EXPRESSION.items():
-	perc = float(correct_count[key]/actual_count[key])
-	print("\t{}: {}/{} correct \tPercentage: {}".format(value, correct_count[key], actual_count[key]), perc)
+	perc = float(correct_count[key])/actual_count[key]
+	print("\t{}: {}/{} correct \tPercentage: {}".format(value, correct_count[key], actual_count[key], perc))
