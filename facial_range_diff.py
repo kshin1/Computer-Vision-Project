@@ -279,7 +279,6 @@ for img in glob.glob("projectImages/[K-M][0-9]*.bmp"):
 
 	# Calculate difference to neutral expression
 	calcDiff = [ distList[i] - avg_diff["n"][i] for i in range(len(distList)) ]
-
 	# Determine which emotion
 	pointDict = {}
 	pointDict["a"] = angryCalc(calcDiff)
