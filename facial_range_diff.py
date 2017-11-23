@@ -295,7 +295,7 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"):
 			predicted = emot 
 			max_pt = point
 
-	print(pointDict)
+	#print(pointDict)
 
 	print("{}\tPredicted: {}, Actual: {}".format(img_id, EXPRESSION[predicted], EXPRESSION[actual]))
 	# Select the best emotion
@@ -308,5 +308,8 @@ for img in glob.glob("projectImages/[A-J][0-9]*.bmp"):
 print("Tested {} images, {} correct".format(total, correct))
 print("Overall percent accuracy: {}%".format((float(correct) / total)* 100))
 for key, value in EXPRESSION.items():
-	perc = float(correct_count[key])/actual_count[key]
-	print("\t{}: {}/{} correct \tPercentage: {}".format(value, correct_count[key], actual_count[key], perc))
+	if actual_count[key] == 0:
+		perc = 0
+	else:
+		perc = float(correct_count[key])/actual_count[key]
+	print("\t{}: {}/{} correct \tPercentage: {}%".format(value, correct_count[key], actual_count[key], perc * 100))
