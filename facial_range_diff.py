@@ -13,94 +13,94 @@ def angryCalc(diffArry):
 	score = 0
 	# Distance of left eye & brow
 	if 4 <= diffArry[0] <= 7:
-		score += 1#0.175
+		score += 0.175
 	# Distance of right eye & brow
 	if 4 <= diffArry[1] <= 7:
-		score += 1#0.175
+		score += 0.175
 	# Distance from mouth to nose
 	if -5 <= diffArry[3] <= 5:
-		score += 1#0.15
+		score += 0.15
 	# Height of mouth
 	if 3 <= diffArry[4] <= 15:
-		score += 1#0.25
+		score += 0.25
 	# Width of mouth
 	if 1 <= diffArry[5] <= 12:
-		score += 1#0.25
+		score += 0.25
 	return score
 
 def confusedCalc(diffArry): 
 	score = 0
 	# Distance of left eye & brow
 	if diffArry[0] <= -3:
-		score += 1#0.2
+		score += 0.2
 	# Distance of right eye & brow
 	if diffArry[1] <= -3:
-		score += 1#0.2
+		score += 0.2
 	# Distance from mouth to nose
 	if 4 <= diffArry[3] <= 14:
-		score += 1#0.2
+		score += 0.2
 	# Height of mouth
 	if -1 <= diffArry[4] <= 10:
-		score += 1#0.2
+		score += 0.2
 	# Width of mouth
 	if 15 <= diffArry[5] <= 25:
-		score += 1#0.2
+		score += 0.2
 	return score
 
 def happyCalc(diffArry):
 	score = 0
 	# Distance of left eye & brow
 	if -4 <= diffArry[0] <= 2:
-		score += 1#0.075
+		score += 0.075
 	# Distance of right eye & brow
 	if -4 <= diffArry[1] <= 2:
-		score += 1#0.075
+		score += 0.075
 	# Distance from mouth to nose
 	if diffArry[3] >= 15:
-		score += 1#0.35
+		score += 0.35
 	# Height of mouth
 	if -25 <= diffArry[4] <= -15:
-		score += 1#0.2
+		score += 0.2
 	# Width of mouth
 	if diffArry[5] <= -3:
-		score += 1#0.3
+		score += 0.3
 	return score
 def surprisedCalc(diffArry):
-    score = 0
+	score = 0
     # Distance of left eye & brow
-    if 5 <= diffArry[0] <= 15:
-        score += 1#.25
+	if 5 <= diffArry[0] <= 15:
+		score += .25
     # Distance of right eye & brow
-    if 5 <= diffArry[1] <= 15:
-        score += 1#.25
+	if 5 <= diffArry[1] <= 15:
+		score += .25
     # Distance from mouth to nose
-    if -5<= diffArry[3] <= 5:
-        score += 1#.125
+	if -5<= diffArry[3] <= 5:
+		score += .125
     # Height of mouth
-    if -15 <= diffArry[4] < -25:
-        score += 1#.125
+	if -15 <= diffArry[4] < -25:
+		score += .125
     # Width of mouth
 	if 15 <= diffArry[5] <= 25:
-		score += 1#.25
-    return score
+		score += .25
+	return score
  
 def neutralCalc(diffArry):
     score = 0
     # Distance of left eye & brow
     if diffArry[0] < 10 and diffArry[0] > -10:
-        score += 1#.2
+        score += .2
     # Distance of right eye & brow
     if diffArry[1] < 10 and diffArry[1] > -10:
-        score += 1#.2
+        score += .2
     # Distance from mouth to nose
     if diffArry[3] < 10 and diffArry[3] > -10:
-        score += 1#.2
+        score += .2
     # Height of mouth
     if diffArry[4] < 10 and diffArry[4] > -10:
-        score += 1#.2
+        score += .2
     # Width of mouth
     if diffArry[5] < 10 and diffArry[5] > -10:
-        score += 1#.2
+        score += .2
  
     return score
  
@@ -108,19 +108,19 @@ def sadCalc(diffArry):
     score = 0
     # Distance of left eye & brow
     if diffArry[0] > -5 and diffArry[0] < 2:
-        score += 1#.2
+        score += .2
     # Distance of right eye & brow
     if diffArry[1] > -5 and diffArry[1] < 2:
-        score += 1#.2
+        score += .2
     # Distance from mouth to nose
     if diffArry[3] > 3 and diffArry[3] < 13:
-        score += 1#.2
+        score += .2
     # Height of mouth
     if diffArry[4] > -11 and diffArry[4] < 0:
-        score += 1#.2
+        score += .2
     # Width of mouth
     if diffArry[5] < 5 and diffArry[5] > -5:
-        score += 1#.2
+        score += .2
  
     return score
 
@@ -162,7 +162,7 @@ for e in EXPRESSION.keys():
 	correct_count[e] = 0
 
 # Testing 
-for img in glob.glob("projectImages/[A-J][0-9]*.bmp"):
+for img in glob.glob("projectImages/[K-M][0-9]*.bmp"):
 	img_id = img.split("/")[1]
 
 	# Get actual emotion and the facial_features extracted
