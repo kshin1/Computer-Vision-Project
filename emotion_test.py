@@ -198,6 +198,27 @@ def camera_loop(clf):
 
 		if action == ord(' '):
 			# svm object detection
+			detector = dlib.get_frontal_face_detector()
+			predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
+			frame = imutils.resize(frame, width=500) 		######## INCORRECT RESIZING LOCATION
+			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+	
+			# detect faces in the grayscale image
+			rects = detector(gray, 1)
+	
+			# loop over the face detections
+			for (i, rect) in enumerate(rects):
+				# determine the facial landmarks for the face region, then
+				# convert the facial landmark (x, y)-coordinates to a NumPy
+				# array
+				shape = predictor(gray, rect)
+				shape = face_utils.shape_to_np(shape)
+	
+				# convert dlib's rectangle to a OpenCV-style bounding box
+				# [i.e., (x, y, w, h)], then draw the face bounding box
+				(x, y, w, h) = face_utils.rect_to_bb(rect)
+				cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+				frame = frame[y:y + h,x:x + w]
 			frame = classify_svm(frame, clf)
 			cv2.imshow('SVM output:', frame)
 
