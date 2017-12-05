@@ -33,8 +33,8 @@ def classify_svm(img):
 def extract_facial_distances(img):
 	detector = dlib.get_frontal_face_detector()
 	predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
-	image = cv2.imread(img)
-	image = imutils.resize(image, width=500)
+	#image = cv2.imread(img)
+	image = imutils.resize(img, width=500)
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	
 	# detect faces in the grayscale image
@@ -174,11 +174,8 @@ def extract_facial_distances(img):
 	dist_eyes = math.sqrt(pow(rEye_x[1]-lEye_x[1], 2) + pow(rEye_y[1]-lEye_y[1], 2))
 
 	# All distances in a list
-	distList = [dist_l, dist_r, dist_eyes, dist_mouth_nose, hght_mouth, wdth_mouth]
-	
-	cv2.imshow("Output", image)
-
-	cv2.waitKey(0)
+	all_dist = [{"dist_l": dist_l, "dist_r": dist_r, "dist_eyes": dist_eyes, "dist_mouth_nose": dist_mouth_nose, "hght_mouth": hght_mouth, "wdth_mouth": wdth_mouth}]
+	return pd.DataFrame(all_dist)
 
 def camera_loop():
     print("Press <SPACE> to capture/classify an image, or <Esc> to exit.")
@@ -209,8 +206,8 @@ if __name__ == "__main__":
 	#train_X, test_X, train_Y, test_Y = train_test_split(data_X, data_Y, random_state = 42, train_size = 0.7)
 
 	# Use stored SVM
-	if os.path.isfile("svm_2.pickle"):
-		f = open("svm_2.pickle", "rb")
+	if os.path.isfile("svm.pickle"):
+		f = open("svm.pickle", "rb")
 		clf = pickle.load(f)
 		f.close()
 	# Create a SVM if it does not already exist
