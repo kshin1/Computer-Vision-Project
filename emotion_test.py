@@ -23,7 +23,7 @@ PREDICTOR = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 
 
 def classify_svm(img, clf):
-	features = extract_facial_distances(img)
+	img, features = extract_facial_distances(img)
 	pred = clf.predict(features)
 
 	# show classification result
@@ -32,30 +32,28 @@ def classify_svm(img, clf):
 	return img
 
 def extract_facial_distances(image):
-	detector = dlib.get_frontal_face_detector()
-	predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 	image = imutils.resize(image, width=500) 		######## INCORRECT RESIZING LOCATION
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	
 	# detect faces in the grayscale image
-	rects = detector(gray, 1)
+	rects = DETECTOR(gray, 1)
 	
 	# loop over the face detections
 	for (i, rect) in enumerate(rects):
 		# determine the facial landmarks for the face region, then
 		# convert the facial landmark (x, y)-coordinates to a NumPy
 		# array
-		shape = predictor(gray, rect)
+		shape = PREDICTOR(gray, rect)
 		shape = face_utils.shape_to_np(shape)
 	
 		# convert dlib's rectangle to a OpenCV-style bounding box
 		# [i.e., (x, y, w, h)], then draw the face bounding box
 		(x, y, w, h) = face_utils.rect_to_bb(rect)
-		cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+		#cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
 	
 		# show the face number
-		cv2.putText(image, "Face #{}".format(i + 1), (x - 10, y - 10),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+		#cv2.putText(image, "Face #{}".format(i + 1), (x - 10, y - 10),
+		#	cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
  
 		# loop over the (x, y)-coordinates for the facial landmarks
 		# and draw them on the image
@@ -179,13 +177,15 @@ def extract_facial_distances(image):
 	all_dist = [{"dist_l": dist_l, "dist_r": dist_r, "dist_eyes": dist_eyes, "dist_mouth_nose": dist_mouth_nose, "hght_mouth": hght_mouth, "wdth_mouth": wdth_mouth}]
 	print(all_dist)
 
-	cv2.imshow("Dots", image)
+	#cv2.imshow("Dots", image)
 
-	return pd.DataFrame(all_dist)
+	return image, pd.DataFrame(all_dist)
 
-def camera_loop(clf):
+def camera_loop(clf, name, img_count):
 	print("Press <SPACE> to capture/classify an image, or <Esc> to exit.")
 	cap = cv2.VideoCapture(0)
+	correct_count = 0
+	total_count = 0
 	while (True):
 		_, frame = cap.read()
 
@@ -197,32 +197,41 @@ def camera_loop(clf):
 			break
 
 		if action == ord(' '):
+			print("Captured image {}_{}.png!".format(name, img_count))
 			# svm object detection
-			detector = dlib.get_frontal_face_detector()
-			predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 			frame = imutils.resize(frame, width=500) 		######## INCORRECT RESIZING LOCATION
 			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 	
 			# detect faces in the grayscale image
-			rects = detector(gray, 1)
+			rects = DETECTOR(gray, 1)
 	
 			# loop over the face detections
 			for (i, rect) in enumerate(rects):
 				# determine the facial landmarks for the face region, then
 				# convert the facial landmark (x, y)-coordinates to a NumPy
 				# array
-				shape = predictor(gray, rect)
+				shape = PREDICTOR(gray, rect)
 				shape = face_utils.shape_to_np(shape)
 	
 				# convert dlib's rectangle to a OpenCV-style bounding box
-				# [i.e., (x, y, w, h)], then draw the face bounding box
 				(x, y, w, h) = face_utils.rect_to_bb(rect)
-				cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+				#cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 				frame = frame[y:y + h,x:x + w]
 			frame = classify_svm(frame, clf)
 			cv2.imshow('SVM output:', frame)
+			cv2.imwrite("img/{}_{}.png".format(name, img_count), frame)
+			img_count+= 1
+			total_count += 1
+
+			# Wait for user input to say correct or not
+			act2 = cv2.waitKey(-1)
+			if act2 == ord('y'):
+				correct_count += 1
+			else:
+				continue
 
 	cap.release()
+	return correct_count, total_count
 
 if __name__ == "__main__":
 	data = pd.read_csv("emotions.csv")
@@ -250,5 +259,16 @@ if __name__ == "__main__":
 		pickle.dump(clf, f)
 		f.close()
 	print("Starting camera...")
-	camera_loop(clf)
+	name = raw_input("Enter name: ")
+	while not name:
+		name = raw_input("Enter name: ")
+	# Process name
+	name = "_".join(name.split())
+	img_count = 0
+	while os.path.isfile("img/{}_{}.png".format(name, str(img_count))):
+		img_count += 1
+	correct, total = camera_loop(clf, name, img_count)
+
+	print("Accuracy: {:.2f}%".format(100* correct/float(total)))
+	print("{} out of {} correctly predicted".format(correct, total))
 	cv2.destroyAllWindows()
