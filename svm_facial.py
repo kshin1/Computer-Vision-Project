@@ -40,8 +40,9 @@ if __name__ == "__main__":
 
 	# Split to training and testing data
 	train_X, test_X, train_Y, test_Y = train_test_split(data_X, data_Y, random_state = 42, train_size = 0.7)
-
+	print(test_X)
 	# Use stored SVM
+'''
 	if os.path.isfile("svm.pickle"):
 		f = open("svm.pickle", "rb")
 		clf = pickle.load(f)
@@ -71,3 +72,4 @@ if __name__ == "__main__":
 	plt.ylabel("True Value")
 	plt.title("Emotion Detection Accuracy")
 	plt.show()
+'''
