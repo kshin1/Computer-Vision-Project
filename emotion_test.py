@@ -14,6 +14,7 @@ import cv2
 import dlib
 import imutils
 from imutils import face_utils
+import math
 
 EXPRESSION = {"h":"happy", "sa": "sad", "a": "angry",\
 				"n": "neutral", "su": "surprised", "c": "confused", "o": "other"}
@@ -61,7 +62,9 @@ def extract_facial_distances(img):
 		# and draw them on the image
 		for (x, y) in shape:
 			cv2.circle(image, (x, y), 1, (0, 0, 255), -1)
-
+	facial_features = {}
+	for (name, (i, j)) in face_utils.FACIAL_LANDMARKS_IDXS.items():
+		facial_features[name] = shape[i:j]
 		# Process the person's left eye (our right)
 		lEye_x = []
 		lEye_y = []
